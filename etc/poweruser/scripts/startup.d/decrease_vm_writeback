@@ -1,2 +1,0 @@
-#!/bin/bash
-echo 1500 > /proc/sys/vm/dirty_writeback_centisecs

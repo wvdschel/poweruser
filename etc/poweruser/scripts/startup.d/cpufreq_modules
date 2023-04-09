@@ -1,7 +1,0 @@
-#!/bin/bash
-modprobe acpi-cpufreq
-modprobe cpufreq_ondemand
-modprobe cpufreq_powersave
-modprobe cpufreq_userspace
-modprobe cpufreq_conservative
-
