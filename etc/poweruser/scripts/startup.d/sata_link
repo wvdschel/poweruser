@@ -1,0 +1,2 @@
+#!/bin/bash
+echo min_power > /sys/class/scsi_host/host0/link_power_management_policy

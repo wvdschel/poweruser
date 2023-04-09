@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+PID_FILE = '/tmp/poweruser.pid'
+POWERUSER_SCRIPT = '/etc/poweruser/poweruser.rb'
+
+if ARGV[0] == 'start'
+  if File.exists? PID_FILE
+    puts "Poweruser seems to already be running (PID: #{File.read(PID_FILE)})."
+    puts "If you are sure poweruser is not running, remove #{PID_FILE}"
+    puts "and run this script again."
+  else
+    pid = Process.fork
+    if pid.nil?
+      require POWERUSER_SCRIPT
+    else
+      File.open(PID_FILE, 'w') { |f| f.print(pid) }
+      puts "Started poweruser in background with PID #{pid}."
+    end
+  end
+elsif ARGV[0] == 'stop'
+  if File.exists? PID_FILE
+    old_pid = File.read(PID_FILE)
+    Process.kill(2, old_pid.to_i)
+    File.delete PID_FILE
+  else
+    puts "Poweruser doesn't seem to be running"
+  end
+else
+  puts "Usage: #{$1} start|stop"
+end

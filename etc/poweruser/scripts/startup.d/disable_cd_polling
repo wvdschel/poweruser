@@ -1,0 +1,2 @@
+#!/bin/bash
+hal-disable-polling --device /dev/cdrom
