@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'timeout'
 
 $stdout.reopen("/var/log/poweruser.log", "w")
 $stderr.reopen("/var/log/poweruser_errors.log", "w")
@@ -6,11 +7,20 @@ $stderr.reopen("/var/log/poweruser_errors.log", "w")
 def run_directory(dir)
   puts "Running #{dir}"
   Dir["/etc/poweruser/scripts/#{dir}.d/*"].each do |file|
-    begin
-      # Ruby 1.9 output redirection
-      #spawn(file, :err=>:out, :out=>"/var/log/poweruser.log")
-      if not system(file)
-        puts "#{file} failed"
+  begin
+    pid = spawn(file, :err=>:out, :out=>$stdout)
+      begin
+        Timeout.timeout(20) do
+          exit_code = Process.wait pid
+          if exit_code != 0
+            puts "failed to run #{file}: exit code #{exit_code}"
+          end
+        end
+      rescue Timeout::Error
+        puts "script stuck: #{file} has been running for 20s, killing"
+        Process.kill 9, pid
+        # collect status so it doesn't stick around as zombie process
+        Process.wait pid
       end
     end
   end
