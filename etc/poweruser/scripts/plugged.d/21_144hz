@@ -1,0 +1,2 @@
+#!/bin/bash
+swaymsg -s /run/user/*/sway-ipc.*.sock output eDP-2 mode 1920x1200@144Hz
