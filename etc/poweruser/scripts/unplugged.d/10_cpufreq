@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cpupower frequency-set --min 900MHz
+cpupower frequency-set --max 2GHz
